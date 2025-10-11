@@ -123,7 +123,7 @@
 - [x] 각 모듈에 `__init__.py` 생성 (Python 패키지 인식)
 - [x] `reports/.gitkeep` 생성 (빈 디렉토리 보존)
 - [x] `logs/` 디렉토리 생성 (애플리케이션 로그용)
-- [ ] Phase 1 완료 후 main에 병합
+- [x] Phase 1 완료 후 main에 병합
   ```bash
   git checkout main
   git merge phase-1-setup --no-ff -m "Phase 1: 프로젝트 초기 설정 완료"
@@ -207,7 +207,7 @@
       @property
       def is_running(self) -> bool
   ```
-- [ ] `src/models/report_stats.py` - 리포트 통계 클래스
+- [x] `src/models/report_stats.py` - 리포트 통계 클래스
   ```python
   @dataclass
   class ReportStats:
@@ -220,30 +220,30 @@
   ```
 
 ### 3.2 HTML 템플릿 작성
-- [ ] Jinja2 템플릿 파일 생성 (`templates/report_template.html`)
-- [ ] 리포트 헤더 섹션 (제목, 생성 시간, 조회 기간)
-- [ ] **백업 현황 요약** 섹션
+- [x] Jinja2 템플릿 파일 생성 (`templates/report_template.html`)
+- [x] 리포트 헤더 섹션 (제목, 생성 시간, 조회 기간)
+- [x] **백업 현황 요약** 섹션
   - 전체 서버 수
   - 성공 건수
   - 실패 건수
   - 진행중 건수
-- [ ] **성공한 백업 목록** 테이블
+- [x] **성공한 백업 목록** 테이블
   - 서버명, 완료시간, 백업 크기 등
-- [ ] **실패한 백업 상세** 섹션 (⚠️ 강조 표시)
+- [x] **실패한 백업 상세** 섹션 (⚠️ 강조 표시)
   - 서버명, 실패시간
   - **에러 로그 표시** (필수)
-- [ ] **진행 중인 백업** 목록
+- [x] **진행 중인 백업** 목록
   - 서버명, 시작시간
-- [ ] CSS 스타일링 (가독성 향상, 실패 항목 강조)
+- [x] CSS 스타일링 (가독성 향상, 실패 항목 강조)
 
 ### 3.3 리포트 생성 모듈
-- [ ] `src/report/report_generator.py` 생성
-- [ ] Jinja2 환경 설정
-- [ ] 템플릿 렌더링 함수 구현
-- [ ] 리포트 파일명 생성 (타임스탬프 포함)
-- [ ] `reports/` 디렉토리에 HTML 파일 저장
-- [ ] 파일 생성 성공/실패 로깅
-- [ ] Phase 3 완료 후 main에 병합
+- [x] `src/report/report_generator.py` 생성
+- [x] Jinja2 환경 설정
+- [x] 템플릿 렌더링 함수 구현
+- [x] 리포트 파일명 생성 (타임스탬프 포함)
+- [x] `reports/` 디렉토리에 HTML 파일 저장
+- [x] 파일 생성 성공/실패 로깅
+- [x] Phase 3 완료 후 main에 병합
   ```bash
   git checkout main
   git merge phase-3-report --no-ff -m "Phase 3: 리포트 생성 시스템 완료"
@@ -257,31 +257,31 @@
 **브랜치 생성**: `git checkout -b phase-4-main`
 
 ### 4.1 메인 프로그램 작성
-- [ ] `src/main.py` 구현
-- [ ] 커맨드 라인 인자 처리 (테스트/운영 모드 선택)
-- [ ] 전체 프로세스 오케스트레이션
+- [x] `src/main.py` 구현
+- [x] 커맨드 라인 인자 처리 (테스트/운영 모드 선택)
+- [x] 전체 프로세스 오케스트레이션
   1. API 연결
   2. 데이터 수집
   3. 데이터 가공
   4. 리포트 생성
-- [ ] 실행 시간 측정 및 출력
-- [ ] 에러 핸들링 및 종료 코드 설정
+- [x] 실행 시간 측정 및 출력
+- [x] 에러 핸들링 및 종료 코드 설정
 
 ### 4.2 유틸리티 함수
-- [ ] `src/utils/__init__.py` 생성
-- [ ] `src/utils/logger.py` - 로깅 설정
+- [x] `src/utils/__init__.py` 생성
+- [x] `src/utils/logger.py` - 로깅 설정
   - 파일 로깅 (logs/app.log - 일별 로테이션)
   - 콘솔 출력 (INFO 레벨)
   - 포맷: `[YYYY-MM-DD HH:MM:SS] [LEVEL] message`
-- [ ] `src/utils/config.py` - 설정 관리
+- [x] `src/utils/config.py` - 설정 관리
   - .env 로드
   - 기본값 설정
   - 설정 검증 (필수 값 확인)
-- [ ] `src/utils/datetime_helper.py` - 시간 계산 유틸리티
+- [x] `src/utils/datetime_helper.py` - 시간 계산 유틸리티
   - `get_test_period()`: 1주일 전 ~ 현재
   - `get_production_period()`: 전일 22시 ~ 현재
   - `format_timestamp()`: 리포트 파일명용 (YYYYMMDDHHMMSS)
-- [ ] Phase 4 완료 후 main에 병합
+- [x] Phase 4 완료 후 main에 병합
   ```bash
   git checkout main
   git merge phase-4-main --no-ff -m "Phase 4: 메인 실행 로직 완료"
@@ -295,44 +295,44 @@
 **브랜치 생성**: `git checkout -b phase-5-test`
 
 ### 5.1 단위 테스트 (pytest 사용)
-- [ ] pytest 관련 패키지 설치 (`pytest`, `pytest-cov`, `pytest-mock`)
-- [ ] `tests/__init__.py` 생성
-- [ ] `tests/fixtures/` 디렉토리 생성
+- [x] pytest 관련 패키지 설치 (`pytest`, `pytest-cov`, `pytest-mock`)
+- [x] `tests/__init__.py` 생성
+- [x] `tests/fixtures/` 디렉토리 생성
   - Phase 2.3에서 수집한 실제 API 응답 샘플 저장
   - `api_response_sample.json` (정상 응답)
   - `api_response_failed.json` (실패 케이스)
-- [ ] `tests/test_api.py` - API 클라이언트 테스트
+- [x] `tests/test_api.py` - API 클라이언트 테스트
   - **실제 응답 샘플 사용** (fixtures/api_response_sample.json)
   - 응답 파싱 로직 테스트
   - 데이터 변환 테스트
   - 에러 응답 처리 테스트
-- [ ] `tests/test_models.py` - 데이터 모델 테스트
+- [x] `tests/test_models.py` - 데이터 모델 테스트
   - BackupJob 프로퍼티 테스트
   - 상태 분류 테스트
-- [ ] `tests/test_report.py` - 리포트 생성 테스트
+- [x] `tests/test_report.py` - 리포트 생성 테스트
   - 템플릿 렌더링 테스트
   - 파일 생성 테스트
-- [ ] `tests/test_utils.py` - 유틸리티 테스트
+- [x] `tests/test_utils.py` - 유틸리티 테스트
   - 시간 계산 로직 테스트
   - 설정 로드 테스트
-- [ ] pytest 설정 파일 생성 (`pytest.ini`)
-- [ ] 테스트 실행 및 커버리지 확인 (`pytest -v --cov=src`)
+- [x] pytest 설정 파일 생성 (`pytest.ini`)
+- [x] 테스트 실행 및 커버리지 확인 (`pytest -v --cov=src`)
 
 ### 5.2 통합 테스트 (실제 API 사용)
-- [ ] **실제 Bacula API 연결** (.env 설정 사용)
-- [ ] 1주일 전 데이터로 전체 프로세스 테스트
-- [ ] 생성된 HTML 파일 검증
-- [ ] 다양한 시나리오 테스트
+- [x] **실제 Bacula API 연결** (.env 설정 사용)
+- [x] 1주일 전 데이터로 전체 프로세스 테스트
+- [x] 생성된 HTML 파일 검증
+- [x] 다양한 시나리오 테스트
   - 모든 백업 성공
   - 일부 백업 실패
   - 진행 중 백업 있음
   - API 오류 상황 (가능하면)
 
 ### 5.3 성능 테스트
-- [ ] API 호출 시간 측정 (10초 이하 확인)
-- [ ] 대량 데이터 처리 성능 검증
-- [ ] 메모리 사용량 확인
-- [ ] Phase 5 완료 후 main에 병합
+- [x] API 호출 시간 측정 (10초 이하 확인)
+- [x] 대량 데이터 처리 성능 검증
+- [x] 메모리 사용량 확인
+- [x] Phase 5 완료 후 main에 병합
   ```bash
   git checkout main
   git merge phase-5-test --no-ff -m "Phase 5: 테스트 및 검증 완료"
@@ -346,36 +346,36 @@
 **브랜치 생성**: `git checkout -b phase-6-docs`
 
 ### 6.1 문서 작성
-- [ ] `README.md` 작성
+- [x] `README.md` 작성
   - 프로젝트 설명
   - 설치 방법
   - 사용 방법
   - 설정 가이드
-- [ ] 코드 주석 및 docstring 추가
+- [x] 코드 주석 및 docstring 추가
 
 ### 6.2 코드 품질 검증 및 리팩토링
-- [ ] **flake8 실행 및 코드 컨벤션 준수 확인**
-- [ ] flake8 경고/에러 수정
-- [ ] 코드 스타일 통일 (PEP 8)
-- [ ] 불필요한 코드 제거
-- [ ] 에러 처리 강화
-- [ ] 로깅 레벨 조정
-- [ ] 성능 최적화
+- [x] **flake8 실행 및 코드 컨벤션 준수 확인**
+- [x] flake8 경고/에러 수정
+- [x] 코드 스타일 통일 (PEP 8)
+- [x] 불필요한 코드 제거
+- [x] 에러 처리 강화
+- [x] 로깅 레벨 조정
+- [x] 성능 최적화
 
 ### 6.3 배포 준비
-- [ ] 실행 스크립트 작성 (`run.sh`)
+- [x] 실행 스크립트 작성 (`run.sh`)
   ```bash
   #!/bin/bash
   cd /path/to/baculum
   source .venv/bin/activate
   python src/main.py --mode production
   ```
-- [ ] 실행 권한 부여 (`chmod +x run.sh`)
-- [ ] 실행 가이드 작성 (`docs/deployment.md`)
+- [x] 실행 권한 부여 (`chmod +x run.sh`)
+- [x] 실행 가이드 작성 (`docs/deployment.md`)
   - 수동 실행 방법
   - 설정 확인 사항
   - 로그 확인 방법
-- [ ] Phase 6 완료 후 main에 병합
+- [x] Phase 6 완료 후 main에 병합
   ```bash
   git checkout main
   git merge phase-6-docs --no-ff -m "Phase 6: 문서화 및 배포 준비 완료"
@@ -389,18 +389,18 @@
 **브랜치**: main (최종 검증은 main에서 수행)
 
 ### 7.1 최종 검증
-- [ ] 모든 요구사항 충족 확인
-- [ ] 성능 기준 달성 확인 (API 10초 이하, 오류율 0.1% 이하)
-- [ ] 문서 최종 검토
-- [ ] Git 커밋 이력 검토 (`git log --oneline` 확인)
-- [ ] 코드 정리 및 최종 flake8 검증
+- [x] 모든 요구사항 충족 확인
+- [x] 성능 기준 달성 확인 (API 10초 이하, 오류율 0.1% 이하)
+- [x] 문서 최종 검토
+- [x] Git 커밋 이력 검토 (`git log --oneline` 확인)
+- [x] 코드 정리 및 최종 flake8 검증
 
 ### 7.2 인수인계 준비
-- [ ] README.md 최종 업데이트
-- [ ] 배포 가이드 확인 (`docs/deployment.md`)
-- [ ] 트러블슈팅 가이드 작성 (자주 발생할 수 있는 문제)
-- [ ] 인수인계 문서 작성 (운영자용)
-- [ ] 최종 릴리즈 태그 생성
+- [x] README.md 최종 업데이트
+- [x] 배포 가이드 확인 (`docs/deployment.md`)
+- [x] 트러블슈팅 가이드 작성 (자주 발생할 수 있는 문제)
+- [x] 인수인계 문서 작성 (운영자용)
+- [x] 최종 릴리즈 태그 생성
   ```bash
   git tag v1.0.0 -m "Release: Bacula Backup Report System v1.0.0"
   ```
@@ -521,13 +521,13 @@ git tag v0.1-phase1              # 태그로 마일스톤 표시
 
 | Phase | 제목 | 진행률 |
 |-------|------|--------|
-| 1 | 프로젝트 초기 설정 | 0% |
-| 2 | Bacula API 연동 | 0% |
-| 3 | 리포트 생성 시스템 | 0% |
-| 4 | 메인 실행 로직 | 0% |
-| 5 | 테스트 및 검증 | 0% |
-| 6 | 문서화 및 배포 준비 | 0% |
-| 7 | 운영 테스트 및 최종 검증 | 0% |
+| 1 | 프로젝트 초기 설정 | 100% ✓ |
+| 2 | Bacula API 연동 | 100% ✓ |
+| 3 | 리포트 생성 시스템 | 100% ✓ |
+| 4 | 메인 실행 로직 | 100% ✓ |
+| 5 | 테스트 및 검증 | 100% ✓ |
+| 6 | 문서화 및 배포 준비 | 100% ✓ |
+| 7 | 최종 검증 | 100% ✓ |
 | 8 | 향후 확장 (보류) | 0% |
 
 ---
