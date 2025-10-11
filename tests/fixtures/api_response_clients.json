@@ -1,0 +1,10 @@
+[
+  {
+    "clientid": 1,
+    "name": "172_16_1_0-client",
+    "uname": "9.4.4 (28May19) x86_64-pc-linux-gnu,redhat,(Core)",
+    "autoprune": 1,
+    "fileretention": 1209600,
+    "jobretention": 15552000
+  }
+]
