@@ -187,8 +187,8 @@
 **브랜치 생성**: `git checkout -b phase-3-report`
 
 ### 3.1 데이터 모델 설계
-- [ ] `src/models/__init__.py` 생성
-- [ ] `src/models/backup_job.py` - 백업 작업 데이터 클래스
+- [x] `src/models/__init__.py` 생성
+- [x] `src/models/backup_job.py` - 백업 작업 데이터 클래스
   ```python
   @dataclass
   class BackupJob:
