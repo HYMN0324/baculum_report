@@ -25,13 +25,13 @@
 ## 📂 Phase 1: 프로젝트 초기 설정
 
 ### 1.1 환경 설정
-- [ ] Git 저장소 확인 및 초기화
+- [x] Git 저장소 확인 및 초기화
   - `git status` 실행해서 저장소 상태 확인
   - "fatal: not a git repository" 에러 발생 시에만 `git init` 실행
   - 이미 git 저장소면 스킵
-- [ ] main 브랜치 확인 (기본 브랜치 설정)
-- [ ] Phase 1 작업 브랜치 생성: `git checkout -b phase-1-setup`
-- [ ] `.gitignore` 설정
+- [x] main 브랜치 확인 (기본 브랜치 설정)
+- [x] Phase 1 작업 브랜치 생성: `git checkout -b phase-1-setup`
+- [x] `.gitignore` 설정
   ```
   # Python
   __pycache__/
@@ -53,25 +53,25 @@
   .idea/
   *.swp
   ```
-- [ ] Python 3.12 가상환경 확인/생성 (`.venv`)
-- [ ] 가상환경 활성화 확인 (`source .venv/bin/activate`)
-- [ ] pip 업그레이드 (`pip install --upgrade pip`)
-- [ ] 필수 패키지 설치 (`requests`, `jinja2`, `python-dotenv`, `flake8`, `pytest`)
-- [ ] `requirements.txt` 생성
+- [x] Python 3.12 가상환경 확인/생성 (`.venv`)
+- [x] 가상환경 활성화 확인 (`source .venv/bin/activate`)
+- [x] pip 업그레이드 (`pip install --upgrade pip`)
+- [x] 필수 패키지 설치 (`requests`, `jinja2`, `python-dotenv`, `flake8`, `pytest`)
+- [x] `requirements.txt` 생성
   - 파일이 없으면: `pip freeze > requirements.txt`
   - 파일이 있으면: 내용 확인 후 업데이트 여부 결정
-- [ ] `.env.example` 템플릿 생성 (실제 값 없이 키만)
-- [ ] `.env` 파일 확인
+- [x] `.env.example` 템플릿 생성 (실제 값 없이 키만)
+- [x] `.env` 파일 확인
   - 파일이 있으면: 내용 확인 (필수 키 존재 여부)
   - 파일이 없으면: `.env.example` 복사 후 실제 값 입력
-- [ ] `.flake8` 설정 파일 생성
+- [x] `.flake8` 설정 파일 생성
   ```ini
   [flake8]
   max-line-length = 100
   exclude = .venv,__pycache__,.git
   ignore = E203,W503
   ```
-- [ ] 초기 커밋 (phase-1-setup 브랜치에서)
+- [x] 초기 커밋 (phase-1-setup 브랜치에서)
   ```bash
   git add .gitignore .flake8 requirements.txt .env.example
   git commit -m "init: 프로젝트 초기 설정"
@@ -79,7 +79,7 @@
   ⚠️ `.env` 파일은 절대 커밋하지 않음
 
 ### 1.2 프로젝트 구조 설계
-- [ ] 디렉토리 구조 생성
+- [x] 디렉토리 구조 생성
   ```
   baculum/
   ├── src/
@@ -120,9 +120,9 @@
   ├── requirements.txt
   └── README.md
   ```
-- [ ] 각 모듈에 `__init__.py` 생성 (Python 패키지 인식)
-- [ ] `reports/.gitkeep` 생성 (빈 디렉토리 보존)
-- [ ] `logs/` 디렉토리 생성 (애플리케이션 로그용)
+- [x] 각 모듈에 `__init__.py` 생성 (Python 패키지 인식)
+- [x] `reports/.gitkeep` 생성 (빈 디렉토리 보존)
+- [x] `logs/` 디렉토리 생성 (애플리케이션 로그용)
 - [ ] Phase 1 완료 후 main에 병합
   ```bash
   git checkout main
