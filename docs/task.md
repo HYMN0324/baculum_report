@@ -173,7 +173,7 @@
   - API 호출 시간 측정 (10초 이하 확인)
 - [x] 응답 데이터 기반으로 파싱 로직 구현
 - [x] 파싱 로직 단위 테스트 작성 (실제 응답 샘플 사용)
-- [ ] Phase 2 완료 후 main에 병합
+- [x] Phase 2 완료 후 main에 병합
   ```bash
   git checkout main
   git merge phase-2-api --no-ff -m "Phase 2: Bacula API 연동 완료"
