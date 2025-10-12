@@ -46,7 +46,7 @@ cp .env.example .env
 `.env` 파일 내용:
 
 ```ini
-BACULUM_API_HOST=172.16.1.0
+BACULUM_API_HOST=baculum_ip_address
 BACULUM_API_PORT=9096
 BACULUM_API_USERNAME=your_username
 BACULUM_API_PASSWORD=your_password
