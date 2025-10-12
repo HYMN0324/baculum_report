@@ -12,6 +12,7 @@ from typing import List
 from src.api.bacula_client import BaculaClient, BaculaAPIError
 from src.models.backup_job import BackupJob
 from src.report.report_generator import ReportGenerator, ReportGeneratorError
+from src.mail.email_sender import EmailSender, EmailSendError
 from src.utils.config import Config, ConfigError
 from src.utils.logger import setup_logger
 from src.utils.datetime_helper import (
@@ -59,6 +60,12 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         '--output',
         help='출력 파일명 (지정하지 않으면 자동 생성: mail_YYYYMMDDHHMMSS.html)'
+    )
+
+    parser.add_argument(
+        '--send-mail',
+        action='store_true',
+        help='리포트를 이메일로 발송 (.env에 메일 설정 필요)'
     )
 
     return parser.parse_args()
@@ -122,12 +129,34 @@ def main() -> int:
                 f"{format_datetime_display(end_period)}"
             )
 
-            # 백업 작업 조회
+            # 백업 작업 조회 - 레벨별로 나누어 조회
             api_start = time.time()
-            jobs_data = client.get_jobs(start_period, end_period)
+
+            logger.info("백업 레벨별 작업 조회 중...")
+
+            # Full 백업 조회
+            full_jobs_data = client.get_jobs(
+                start_period, end_period, level='F', type='B'
+            )
+            logger.info(f"  Full 백업: {len(full_jobs_data)}건")
+
+            # Incremental 백업 조회
+            incremental_jobs_data = client.get_jobs(
+                start_period, end_period, level='I', type='B'
+            )
+            logger.info(f"  Incremental 백업: {len(incremental_jobs_data)}건")
+
+            # Differential 백업 조회
+            differential_jobs_data = client.get_jobs(
+                start_period, end_period, level='D', type='B'
+            )
+            logger.info(f"  Differential 백업: {len(differential_jobs_data)}건")
+
+            # 모든 작업 합치기
+            jobs_data = full_jobs_data + incremental_jobs_data + differential_jobs_data
             api_elapsed = time.time() - api_start
 
-            logger.info(f"✓ 백업 작업 {len(jobs_data)}건 조회 완료")
+            logger.info(f"✓ 백업 작업 총 {len(jobs_data)}건 조회 완료")
             logger.info(f"  API 호출 시간: {api_elapsed:.2f}초")
 
             if api_elapsed > 10:
@@ -178,7 +207,7 @@ def main() -> int:
 
         # 4. 리포트 생성
         logger.info("")
-        logger.info("[4/4] HTML 리포트 생성 중...")
+        logger.info("[4/5] HTML 리포트 생성 중..." if args.send_mail else "[4/4] HTML 리포트 생성 중...")
         try:
             generator = ReportGenerator()
             report_path = generator.generate_report(
@@ -197,11 +226,46 @@ def main() -> int:
             logger.error(f"✗ 리포트 생성 실패: {e}", exc_info=True)
             return 1
 
+        # 5. 메일 발송 (옵션)
+        if args.send_mail:
+            logger.info("")
+            logger.info("[5/5] 이메일 발송 중...")
+            try:
+                # 메일 설정 확인
+                if not config.has_mail_config():
+                    logger.warning("⚠ 메일 설정이 불완전합니다. 이메일 발송을 건너뜁니다.")
+                    logger.warning("  .env 파일에서 SMTP 관련 설정을 확인하세요.")
+                else:
+                    # EmailSender 생성
+                    email_sender = EmailSender(**config.get_email_sender_config())
+
+                    # 리포트 날짜 (파일명에서 추출 또는 현재 날짜)
+                    report_date = end_period.strftime('%Y-%m-%d')
+
+                    # 메일 발송
+                    email_sender.send_report_email(
+                        to_email=config.mail_to,
+                        report_path=report_path,
+                        report_date=report_date
+                    )
+                    logger.info("✓ 이메일 발송 완료")
+                    logger.info(f"  수신자: {config.mail_to}")
+
+            except EmailSendError as e:
+                logger.error(f"✗ 이메일 발송 실패: {e}")
+                logger.warning("  리포트는 생성되었지만 이메일 발송에 실패했습니다.")
+                # 메일 발송 실패해도 프로그램은 성공으로 처리
+            except Exception as e:
+                logger.error(f"✗ 이메일 발송 중 예상치 못한 오류: {e}", exc_info=True)
+                logger.warning("  리포트는 생성되었지만 이메일 발송에 실패했습니다.")
+
         # 실행 시간 출력
         elapsed = time.time() - start_time
         logger.info("")
         logger.info("=" * 60)
         logger.info("백업 리포트 생성 완료!")
+        if args.send_mail and config.has_mail_config():
+            logger.info("이메일 발송 완료!")
         logger.info(f"총 실행 시간: {elapsed:.2f}초")
         logger.info("=" * 60)
 

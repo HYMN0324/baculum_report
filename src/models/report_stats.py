@@ -40,6 +40,16 @@ class ReportStats:
     report_time: datetime
     total_backup_bytes: int
     total_files: int
+    # 백업 레벨별 통계
+    full_total: int
+    full_success: int
+    full_failed: int
+    incremental_total: int
+    incremental_success: int
+    incremental_failed: int
+    differential_total: int
+    differential_success: int
+    differential_failed: int
 
     @property
     def success_rate(self) -> float:
@@ -100,21 +110,43 @@ class ReportStats:
         Returns:
             ReportStats 객체
         """
+        # 취소된 작업 제외 (통계에 포함하지 않음)
+        active_jobs = [job for job in jobs if not job.is_canceled]
+
         # 클라이언트 중복 제거
-        unique_clients = set(job.client_name for job in jobs)
+        unique_clients = set(job.client_name for job in active_jobs)
 
         # 상태별 집계
-        success_count = sum(1 for job in jobs if job.is_success)
-        failed_count = sum(1 for job in jobs if job.is_failed)
-        canceled_count = sum(1 for job in jobs if job.is_canceled)
-        running_count = sum(1 for job in jobs if job.is_running)
+        success_count = sum(1 for job in active_jobs if job.is_success)
+        failed_count = sum(1 for job in active_jobs if job.is_failed)
+        canceled_count = sum(1 for job in jobs if job.is_canceled)  # 원본 jobs에서 카운트
+        running_count = sum(1 for job in active_jobs if job.is_running)
 
-        # 전체 백업 크기 및 파일 수
-        total_backup_bytes = sum(job.backup_bytes for job in jobs)
-        total_files = sum(job.job_files for job in jobs)
+        # 전체 백업 크기 및 파일 수 (취소된 작업 제외)
+        total_backup_bytes = sum(job.backup_bytes for job in active_jobs)
+        total_files = sum(job.job_files for job in active_jobs)
+
+        # 백업 레벨별 통계 (취소된 작업 제외)
+        # Full 백업
+        full_jobs = [job for job in active_jobs if job.level == 'F']
+        full_total = len(full_jobs)
+        full_success = sum(1 for job in full_jobs if job.is_success)
+        full_failed = sum(1 for job in full_jobs if job.is_failed)
+
+        # Incremental 백업
+        incremental_jobs = [job for job in active_jobs if job.level == 'I']
+        incremental_total = len(incremental_jobs)
+        incremental_success = sum(1 for job in incremental_jobs if job.is_success)
+        incremental_failed = sum(1 for job in incremental_jobs if job.is_failed)
+
+        # Differential 백업
+        differential_jobs = [job for job in active_jobs if job.level == 'D']
+        differential_total = len(differential_jobs)
+        differential_success = sum(1 for job in differential_jobs if job.is_success)
+        differential_failed = sum(1 for job in differential_jobs if job.is_failed)
 
         return cls(
-            total_jobs=len(jobs),
+            total_jobs=len(active_jobs),
             success_count=success_count,
             failed_count=failed_count,
             canceled_count=canceled_count,
@@ -125,6 +157,15 @@ class ReportStats:
             report_time=datetime.now(),
             total_backup_bytes=total_backup_bytes,
             total_files=total_files,
+            full_total=full_total,
+            full_success=full_success,
+            full_failed=full_failed,
+            incremental_total=incremental_total,
+            incremental_success=incremental_success,
+            incremental_failed=incremental_failed,
+            differential_total=differential_total,
+            differential_success=differential_success,
+            differential_failed=differential_failed,
         )
 
     def __str__(self) -> str:

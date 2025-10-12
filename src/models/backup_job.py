@@ -20,8 +20,9 @@ class BackupJob:
         client_name: 클라이언트명
         status: 작업 상태 코드 (T=성공, f=실패, A=취소 등)
         level: 백업 레벨 (F=Full, I=Incremental, D=Differential)
+        job_type: 작업 타입 (B=Backup, R=Restore, V=Verify, etc.)
         start_time: 작업 시작 시간
-        end_time: 작업 종료 시간
+        end_time: 작업 종료 시간 (진행 중인 경우 None)
         backup_bytes: 백업 데이터 크기 (바이트)
         job_files: 백업된 파일 개수
         job_errors: 에러 개수
@@ -35,8 +36,9 @@ class BackupJob:
     client_name: str
     status: str
     level: str
+    job_type: str
     start_time: datetime
-    end_time: datetime
+    end_time: Optional[datetime]
     backup_bytes: int
     job_files: int
     job_errors: int
@@ -79,6 +81,15 @@ class BackupJob:
             실행 중이면 True, 그 외 False
         """
         return self.status == 'R'
+
+    @property
+    def is_backup(self) -> bool:
+        """백업 작업 여부
+
+        Returns:
+            백업 작업이면 True, 그 외 (Restore, Verify 등) False
+        """
+        return self.job_type == 'B'
 
     @property
     def status_display(self) -> str:
@@ -141,8 +152,10 @@ class BackupJob:
 
         Returns:
             작업 시작부터 종료까지의 시간 (초)
+            진행 중인 작업의 경우 현재 시간 기준으로 계산
         """
-        return int((self.end_time - self.start_time).total_seconds())
+        end = self.end_time if self.end_time else datetime.now()
+        return int((end - self.start_time).total_seconds())
 
     @property
     def duration_display(self) -> str:
@@ -182,10 +195,15 @@ class BackupJob:
                 data['starttime'],
                 '%Y-%m-%d %H:%M:%S'
             )
-            end_time = datetime.strptime(
-                data['endtime'],
-                '%Y-%m-%d %H:%M:%S'
-            )
+
+            # endtime이 None이거나 빈 문자열이면 None으로 설정 (진행 중인 job)
+            endtime_str = data.get('endtime')
+            end_time = None
+            if endtime_str:
+                end_time = datetime.strptime(
+                    endtime_str,
+                    '%Y-%m-%d %H:%M:%S'
+                )
 
             # 에러 메시지는 별도로 조회 필요 (여기서는 None)
             # 실제 에러 메시지는 API의 jobs/{id}/log 엔드포인트에서 조회
@@ -196,6 +214,7 @@ class BackupJob:
                 client_name=data['client'],
                 status=data['jobstatus'],
                 level=data['level'],
+                job_type=data.get('type', ''),
                 start_time=start_time,
                 end_time=end_time,
                 backup_bytes=int(data.get('jobbytes', 0)),

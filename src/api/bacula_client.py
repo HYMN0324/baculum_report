@@ -102,15 +102,19 @@ class BaculaClient:
     def get_jobs(
         self,
         start_time: Optional[datetime] = None,
-        end_time: Optional[datetime] = None
+        end_time: Optional[datetime] = None,
+        level: Optional[str] = None,
+        type: Optional[str] = None
     ) -> List[Dict[str, Any]]:
         """백업 작업 목록 조회
 
-        지정된 시간 범위의 백업 작업 목록을 조회합니다.
+        지정된 시간 범위 및 백업 레벨의 작업 목록을 조회합니다.
 
         Args:
             start_time: 조회 시작 시간 (선택)
             end_time: 조회 종료 시간 (선택)
+            level: 백업 레벨 (F=Full, I=Incremental, D=Differential) (선택)
+            type: 작업 타입 (B=Backup, R=Restore, V=Verify) (선택)
 
         Returns:
             백업 작업 정보 딕셔너리 리스트
@@ -120,7 +124,7 @@ class BaculaClient:
         """
         logger.info(
             f"백업 작업 목록 조회 시작: "
-            f"start={start_time}, end={end_time}"
+            f"start={start_time}, end={end_time}, level={level}, type={type}"
         )
 
         params = {}
@@ -128,6 +132,10 @@ class BaculaClient:
             params['starttime'] = start_time.strftime('%Y-%m-%d %H:%M:%S')
         if end_time:
             params['endtime'] = end_time.strftime('%Y-%m-%d %H:%M:%S')
+        if level:
+            params['level'] = level
+        if type:
+            params['type'] = type
 
         try:
             response = self._request('GET', 'jobs', params=params)

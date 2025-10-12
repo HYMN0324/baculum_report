@@ -113,6 +113,50 @@ class Config:
         """로그 레벨"""
         return os.getenv('LOG_LEVEL', 'INFO').upper()
 
+    @property
+    def smtp_server(self) -> Optional[str]:
+        """SMTP 서버 주소"""
+        return os.getenv('SMTP_SERVER')
+
+    @property
+    def smtp_port(self) -> int:
+        """SMTP 포트 번호"""
+        return int(os.getenv('SMTP_PORT', '587'))
+
+    @property
+    def smtp_username(self) -> Optional[str]:
+        """SMTP 사용자명"""
+        return os.getenv('SMTP_USERNAME')
+
+    @property
+    def smtp_password(self) -> Optional[str]:
+        """SMTP 비밀번호"""
+        return os.getenv('SMTP_PASSWORD')
+
+    @property
+    def mail_from(self) -> Optional[str]:
+        """발신자 이메일 주소"""
+        return os.getenv('MAIL_FROM')
+
+    @property
+    def mail_to(self) -> Optional[str]:
+        """수신자 이메일 주소"""
+        return os.getenv('MAIL_TO')
+
+    def has_mail_config(self) -> bool:
+        """메일 설정이 모두 있는지 확인
+
+        Returns:
+            메일 설정이 완전한 경우 True
+        """
+        required_mail_settings = [
+            self.smtp_server,
+            self.smtp_username,
+            self.smtp_password,
+            self.mail_to,
+        ]
+        return all(required_mail_settings)
+
     def get_baculum_client_config(self) -> dict:
         """BaculaClient 초기화에 필요한 설정 딕셔너리 반환
 
@@ -126,4 +170,27 @@ class Config:
             'password': self.api_password,
             'timeout': self.api_timeout,
             'max_retries': self.api_max_retries,
+        }
+
+    def get_email_sender_config(self) -> dict:
+        """EmailSender 초기화에 필요한 설정 딕셔너리 반환
+
+        Returns:
+            EmailSender 생성자에 전달할 설정 딕셔너리
+
+        Raises:
+            ConfigError: 메일 설정이 불완전한 경우
+        """
+        if not self.has_mail_config():
+            raise ConfigError(
+                "메일 설정이 불완전합니다. .env 파일에서 다음 항목을 확인하세요: "
+                "SMTP_SERVER, SMTP_USERNAME, SMTP_PASSWORD, MAIL_TO"
+            )
+
+        return {
+            'smtp_server': self.smtp_server,
+            'smtp_port': self.smtp_port,
+            'username': self.smtp_username,
+            'password': self.smtp_password,
+            'from_email': self.mail_from,
         }

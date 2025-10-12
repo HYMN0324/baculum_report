@@ -104,8 +104,11 @@ class ReportGenerator:
             stats = ReportStats.from_jobs(jobs, start_period, end_period)
             logger.debug(f"통계 생성 완료: {stats}")
 
-            # 작업 분류
-            success_jobs = [job for job in jobs if job.is_success]
+            # 작업 분류 (type='B'인 Backup 작업만 포함, Restore 작업 제외)
+            success_jobs = [
+                job for job in jobs
+                if job.is_success and job.is_backup
+            ]
             failed_jobs = [job for job in jobs if job.is_failed]
             running_jobs = [job for job in jobs if job.is_running]
             canceled_jobs = [job for job in jobs if job.is_canceled]
