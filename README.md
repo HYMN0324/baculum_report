@@ -163,11 +163,6 @@ BACULUM_API_HOST=172.16.1.0
 BACULUM_API_PORT=9096
 BACULUM_API_USERNAME=admin
 BACULUM_API_PASSWORD=password
-
-# 옵션 설정
-BACULUM_API_TIMEOUT=10        # API 타임아웃 (초)
-BACULUM_API_MAX_RETRIES=3     # 최대 재시도 횟수
-LOG_LEVEL=INFO                # 로그 레벨
 ```
 
 ### 메일 발송 설정 (선택사항)
