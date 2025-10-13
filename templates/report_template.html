@@ -258,33 +258,27 @@
                     <td>
                         <div class="stat-label">전체 백업</div>
                         <div class="stat-number">{{ stats.total_jobs }}</div>
-                        <div class="stat-detail success-text">성공: {{ stats.success_count }}</div>
-                        <div class="stat-detail failed-text">실패: {{ stats.failed_count }}</div>
+                        <div class="stat-detail">Full: {{ stats.full_total }}</div>
+                        <div class="stat-detail">Incremental: {{ stats.incremental_total }}</div>
                     </td>
-                    <td class="full">
-                        <div class="stat-label">Full 백업</div>
-                        <div class="stat-number full">{{ stats.full_total }}</div>
-                        <div class="stat-detail success-text">성공: {{ stats.full_success }}</div>
-                        <div class="stat-detail failed-text">실패: {{ stats.full_failed }}</div>
+                    <td class="success">
+                        <div class="stat-label">성공 백업</div>
+                        <div class="stat-number success">{{ stats.success_count }}</div>
+                        <div class="stat-detail">Full: {{ stats.full_success }}</div>
+                        <div class="stat-detail">Incremental: {{ stats.incremental_success }}</div>
                     </td>
-                    <td class="incremental">
-                        <div class="stat-label">Incremental 백업</div>
-                        <div class="stat-number incremental">{{ stats.incremental_total }}</div>
-                        <div class="stat-detail success-text">성공: {{ stats.incremental_success }}</div>
-                        <div class="stat-detail failed-text">실패: {{ stats.incremental_failed }}</div>
+                    <td class="failed">
+                        <div class="stat-label">실패 백업</div>
+                        <div class="stat-number failed">{{ stats.failed_count }}</div>
+                        <div class="stat-detail">Full: {{ stats.full_failed }}</div>
+                        <div class="stat-detail">Incremental: {{ stats.incremental_failed }}</div>
                     </td>
-                    {% if stats.differential_total > 0 %}
-                    <td class="differential">
-                        <div class="stat-label">Differential 백업</div>
-                        <div class="stat-number differential">{{ stats.differential_total }}</div>
-                        <div class="stat-detail success-text">성공: {{ stats.differential_success }}</div>
-                        <div class="stat-detail failed-text">실패: {{ stats.differential_failed }}</div>
-                    </td>
-                    {% endif %}
                     {% if stats.running_count > 0 %}
                     <td class="running">
-                        <div class="stat-label">실행 중</div>
+                        <div class="stat-label">실행 중인 백업</div>
                         <div class="stat-number running">{{ stats.running_count }}</div>
+                        <div class="stat-detail">Full: {{ stats.running_full }}</div>
+                        <div class="stat-detail">Incremental: {{ stats.running_incremental }}</div>
                     </td>
                     {% endif %}
                 </tr>

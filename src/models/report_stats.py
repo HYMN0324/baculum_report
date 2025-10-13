@@ -27,6 +27,9 @@ class ReportStats:
         report_time: 리포트 생성 시간
         total_backup_bytes: 전체 백업 크기 (바이트)
         total_files: 전체 백업 파일 수
+        running_full: 실행 중인 Full 백업 수
+        running_incremental: 실행 중인 Incremental 백업 수
+        running_differential: 실행 중인 Differential 백업 수
     """
 
     total_jobs: int
@@ -50,6 +53,10 @@ class ReportStats:
     differential_total: int
     differential_success: int
     differential_failed: int
+    # 실행 중인 백업 레벨별 통계
+    running_full: int
+    running_incremental: int
+    running_differential: int
 
     @property
     def success_rate(self) -> float:
@@ -145,6 +152,12 @@ class ReportStats:
         differential_success = sum(1 for job in differential_jobs if job.is_success)
         differential_failed = sum(1 for job in differential_jobs if job.is_failed)
 
+        # 실행 중인 백업 레벨별 통계
+        running_jobs = [job for job in active_jobs if job.is_running]
+        running_full = sum(1 for job in running_jobs if job.level == 'F')
+        running_incremental = sum(1 for job in running_jobs if job.level == 'I')
+        running_differential = sum(1 for job in running_jobs if job.level == 'D')
+
         return cls(
             total_jobs=len(active_jobs),
             success_count=success_count,
@@ -166,6 +179,9 @@ class ReportStats:
             differential_total=differential_total,
             differential_success=differential_success,
             differential_failed=differential_failed,
+            running_full=running_full,
+            running_incremental=running_incremental,
+            running_differential=running_differential,
         )
 
     def __str__(self) -> str:
