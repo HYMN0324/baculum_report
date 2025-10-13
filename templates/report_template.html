@@ -287,21 +287,40 @@
 
         {% if failed_jobs %}
         <h2>⚠️ 실패한 백업 상세</h2>
-        {% for job in failed_jobs %}
-        <div class="error-section">
-            <h3>{{ job.client_name }} - {{ job.job_name }}</h3>
-            <p><strong>작업 ID:</strong> {{ job.job_id }}</p>
-            <p><strong>실패 시간:</strong> {{ job.end_time.strftime('%Y-%m-%d %H:%M:%S') }}</p>
-            <p><strong>백업 레벨:</strong> {{ job.level_display }}</p>
-            <p><strong>에러 개수:</strong> {{ job.job_errors }}</p>
-            {% if job.error_message %}
-            <p><strong>에러 로그:</strong></p>
-            <div class="error-log">{{ job.error_message }}</div>
-            {% else %}
-            <p><em>에러 로그가 없습니다. 작업 ID {{ job.job_id }}의 로그를 확인하세요.</em></p>
-            {% endif %}
-        </div>
-        {% endfor %}
+        <table>
+            <thead>
+                <tr>
+                    <th>작업 ID</th>
+                    <th>작업명</th>
+                    <th>클라이언트</th>
+                    <th>레벨</th>
+                    <th>시작 시간</th>
+                    <th>실패 시간</th>
+                    <th>에러 개수</th>
+                    <th>에러 로그</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in failed_jobs %}
+                <tr style="background-color: #fadbd8;">
+                    <td>{{ job.job_id }}</td>
+                    <td>{{ job.job_name }}</td>
+                    <td>{{ job.client_name }}</td>
+                    <td><span class="status-badge">{{ job.level_display }}</span></td>
+                    <td>{{ job.start_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>{{ job.end_time.strftime('%Y-%m-%d %H:%M') if job.end_time else '-' }}</td>
+                    <td style="text-align: center;">{{ job.job_errors }}</td>
+                    <td>
+                        {% if job.error_message %}
+                        <div class="error-log">{{ job.error_message }}</div>
+                        {% else %}
+                        <span style="color: #95a5a6;">로그 없음</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         {% endif %}
 
         {% if success_jobs %}
@@ -314,8 +333,9 @@
                     <th>레벨</th>
                     <th>시작 시간</th>
                     <th>완료 시간</th>
-                    <th>백업 크기</th>
                     <th>소요 시간</th>
+                    <th>백업 크기</th>
+                    <th>상세보기</th>
                 </tr>
             </thead>
             <tbody>
@@ -326,8 +346,20 @@
                     <td>{{ job.level_display }}</td>
                     <td>{{ job.start_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                     <td>{{ job.end_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                    <td>{{ job.backup_size_display }}</td>
                     <td>{{ job.duration_display }}</td>
+                    <td>{{ job.backup_size_display }}</td>
+                    <td style="text-align: center;">
+                        {% if baculum_web_url %}
+                        <a href="{{ baculum_web_url }}/web/job/history/{{ job.job_id }}/"
+                           target="_blank"
+                           title="Baculum에서 상세 정보 보기"
+                           style="color: #3498db; text-decoration: none; font-size: 18px;">
+                            🔍
+                        </a>
+                        {% else %}
+                        <span style="color: #95a5a6;">-</span>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

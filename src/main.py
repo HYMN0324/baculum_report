@@ -209,7 +209,7 @@ def main() -> int:
         logger.info("")
         logger.info("[4/5] HTML 리포트 생성 중..." if args.send_mail else "[4/4] HTML 리포트 생성 중...")
         try:
-            generator = ReportGenerator()
+            generator = ReportGenerator(config=config)
             report_path = generator.generate_report(
                 jobs=jobs,
                 start_period=start_period,

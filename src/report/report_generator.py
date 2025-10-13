@@ -11,6 +11,7 @@ from datetime import datetime
 
 from ..models.backup_job import BackupJob
 from ..models.report_stats import ReportStats
+from ..utils.config import Config
 from ..utils.datetime_helper import format_timestamp
 
 
@@ -28,6 +29,7 @@ class ReportGenerator:
     백업 작업 데이터를 HTML 리포트로 생성합니다.
 
     Attributes:
+        config: 애플리케이션 설정 객체
         template_dir: 템플릿 디렉토리 경로
         output_dir: 리포트 출력 디렉토리 경로
         jinja_env: Jinja2 환경 객체
@@ -35,15 +37,18 @@ class ReportGenerator:
 
     def __init__(
         self,
+        config: Config,
         template_dir: str = None,
         output_dir: str = None
     ):
         """ReportGenerator 초기화
 
         Args:
+            config: 애플리케이션 설정 객체
             template_dir: 템플릿 디렉토리 경로. None이면 기본 경로 사용
             output_dir: 출력 디렉토리 경로. None이면 기본 경로 사용
         """
+        self.config = config
         # 프로젝트 루트 기준 경로 설정
         project_root = Path(__file__).parent.parent.parent
 
@@ -171,12 +176,21 @@ class ReportGenerator:
         try:
             template = self.jinja_env.get_template('report_template.html')
 
+            # Baculum 웹 URL 구성 (설정이 있는 경우에만)
+            baculum_web_url = None
+            if self.config.has_baculum_web_config():
+                baculum_web_url = (
+                    f"http://{self.config.baculum_web_host}:"
+                    f"{self.config.baculum_web_port}"
+                )
+
             html_content = template.render(
                 stats=stats,
                 success_jobs=success_jobs,
                 failed_jobs=failed_jobs,
                 running_jobs=running_jobs,
-                canceled_jobs=canceled_jobs
+                canceled_jobs=canceled_jobs,
+                baculum_web_url=baculum_web_url
             )
 
             logger.debug("템플릿 렌더링 완료")

@@ -109,6 +109,32 @@ class Config:
         return int(os.getenv('BACULUM_API_MAX_RETRIES', '3'))
 
     @property
+    def baculum_web_host(self) -> Optional[str]:
+        """Baculum 웹 인터페이스 호스트 주소
+
+        Returns:
+            Baculum 웹 인터페이스 호스트 주소 (선택사항)
+        """
+        return os.getenv('BACULUM_WEB_HOST')
+
+    @property
+    def baculum_web_port(self) -> int:
+        """Baculum 웹 인터페이스 포트 번호
+
+        Returns:
+            Baculum 웹 인터페이스 포트 번호 (기본값: 9095)
+        """
+        return int(os.getenv('BACULUM_WEB_PORT', '9095'))
+
+    def has_baculum_web_config(self) -> bool:
+        """Baculum 웹 설정이 완전히 구성되었는지 확인
+
+        Returns:
+            Baculum 웹 호스트가 설정되어 있으면 True, 아니면 False
+        """
+        return self.baculum_web_host is not None
+
+    @property
     def log_level(self) -> str:
         """로그 레벨"""
         return os.getenv('LOG_LEVEL', 'INFO').upper()
