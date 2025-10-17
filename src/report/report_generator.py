@@ -110,9 +110,10 @@ class ReportGenerator:
             logger.debug(f"통계 생성 완료: {stats}")
 
             # 작업 분류 (type='B'인 Backup 작업만 포함, Restore 작업 제외)
+            # Phase 10: Full 백업만 성공 목록에 포함
             success_jobs = [
                 job for job in jobs
-                if job.is_success and job.is_backup
+                if job.is_success and job.is_backup and job.level == 'F'
             ]
             failed_jobs = [job for job in jobs if job.is_failed]
             running_jobs = [job for job in jobs if job.is_running]
