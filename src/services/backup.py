@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 
-from src.api.client import BaculaClient, BaculaAPIError
+from src.api.client import BaculaClient
 from src.models.backup_job import BackupJob
 from src.utils.datetime import (
     get_test_period,
