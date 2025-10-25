@@ -12,7 +12,7 @@ from datetime import datetime
 from ..models.backup_job import BackupJob
 from ..models.report_stats import ReportStats
 from ..utils.config import Config
-from ..utils.datetime_helper import format_timestamp
+from ..utils.datetime import format_timestamp
 
 
 logger = logging.getLogger(__name__)

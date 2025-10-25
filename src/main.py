@@ -1,21 +1,43 @@
-"""Bacula 백업 리포트 생성 메인 프로그램
+"""Bacula 백업 리포트 생성 메인 프로그램 (DEPRECATED)
+
+⚠️  경고: 이 파일은 더 이상 사용되지 않습니다.
+    새로운 CLI를 사용하세요: python -m src report [옵션]
 
 백업 작업 정보를 조회하여 HTML 리포트를 생성합니다.
 """
 
 import sys
+import warnings
 import argparse
 import time
 from datetime import datetime
 from typing import List
 
-from src.api.bacula_client import BaculaClient, BaculaAPIError
+# Deprecation 경고
+warnings.warn(
+    "\n\n"
+    "=" * 70 + "\n"
+    "⚠️  DEPRECATION WARNING\n"
+    "=" * 70 + "\n"
+    "이 실행 방법은 곧 제거될 예정입니다.\n"
+    "\n"
+    "새로운 CLI를 사용하세요:\n"
+    "  python -m src report --mode test\n"
+    "  python -m src report --mode production --send-mail\n"
+    "\n"
+    "자세한 정보: python -m src --help\n"
+    "=" * 70 + "\n",
+    DeprecationWarning,
+    stacklevel=2
+)
+
+from src.api.client import BaculaClient, BaculaAPIError
 from src.models.backup_job import BackupJob
-from src.report.report_generator import ReportGenerator, ReportGeneratorError
-from src.mail.email_sender import EmailSender, EmailSendError
+from src.report.generator import ReportGenerator, ReportGeneratorError
+from src.mail.sender import EmailSender, EmailSendError
 from src.utils.config import Config, ConfigError
 from src.utils.logger import setup_logger
-from src.utils.datetime_helper import (
+from src.utils.datetime import (
     get_test_period,
     get_production_period,
     format_datetime_display
