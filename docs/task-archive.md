@@ -16,13 +16,15 @@
 | 2025-10-12 | task-006 | 문서화 및 배포 준비 | Phase 6 | ✅ 완료 | [상세](./tasks/task-006-documentation-deployment.md) |
 | 2025-10-12 | task-007 | 최종 검증 | Phase 7 | ✅ 완료 | [상세](./tasks/task-007-final-verification.md) |
 | 2025-10-13 | task-008 | 메일 발송 기능 | Phase 8 | ✅ 완료 | [상세](./tasks/task-008-mail-sending.md) |
+| 2025-10-13 | task-009 | 리포트 레이아웃 개선 및 상세보기 기능 | Phase 9 | ✅ 완료 | [상세](./tasks/task-009-report-layout-improvements.md) |
+| 2025-10-17 | task-010 | 백업 리포트 필터링 및 표시 개선 | Phase 10 | ✅ 완료 | [상세](./tasks/task-010-report-filtering-optimization.md) |
 
 ---
 
 ## 📈 프로젝트 진행 통계
 
-- **전체 Phase**: 8개
-- **완료된 Phase**: 8개 (100%)
+- **전체 Phase**: 10개
+- **완료된 Phase**: 10개 (100%)
 - **진행중 Phase**: 0개
 - **보류 Phase**: 0개
 
@@ -124,6 +126,80 @@
 
 ---
 
+## Phase 9: 리포트 레이아웃 개선 및 상세보기 기능 (2025-10-13) ✅
+
+### 목표
+HTML 리포트의 레이아웃 개선 및 Baculum 웹 인터페이스 연동
+
+### 주요 작업
+- 성공한 백업 목록 레이아웃 변경 (소요 시간 ↔ 백업 크기 순서)
+- 상세보기 아이콘 추가 (🔍 돋보기 아이콘)
+- Baculum 웹 인터페이스 링크 연동
+- 실패한 백업 상세를 테이블 형식으로 변경
+- "완료 시간" → "실패 시간" 명칭 변경
+- Config 클래스에 baculum_web_host, baculum_web_port 프로퍼티 추가
+
+### 완료 항목
+- [x] 성공한 백업 목록 컬럼 순서 변경
+- [x] .env.example에 BACULUM_WEB_HOST, BACULUM_WEB_PORT 추가
+- [x] Config 클래스 확장 (baculum_web_host, baculum_web_port, has_baculum_web_config)
+- [x] ReportGenerator에서 baculum_web_url 전달
+- [x] HTML 템플릿에 상세보기 컬럼 및 돋보기 아이콘 추가
+- [x] 실패한 백업을 테이블 형식으로 변경
+- [x] 에러 로그 인라인 표시 구현
+- [x] 이메일 클라이언트 호환성 테스트 완료
+
+### 주요 파일
+- `templates/report_template.html`: 레이아웃 개선 및 상세보기 링크 추가
+- `src/utils/config.py`: Baculum 웹 설정 추가
+- `src/report/report_generator.py`: baculum_web_url 전달
+- `.env.example`: 웹 인터페이스 설정 추가
+
+### Git 커밋
+- ef948a6: Phase 9: 리포트 레이아웃 개선 및 상세보기 기능 추가
+
+### 문서
+- [상세 내역](./tasks/task-009-report-layout-improvements.md)
+
+---
+
+## Phase 10: 백업 리포트 필터링 및 표시 개선 (2025-10-17) ✅
+
+### 목표
+백업 리포트의 가독성 향상 및 Full 백업 중심 필터링
+
+### 주요 작업
+- 성공한 백업 목록을 Full 백업만 표시하도록 필터링
+- 성공한 백업 목록에서 레벨 컬럼 제거 (Full만 표시하므로 불필요)
+- 실패 백업 목록 제목 변경 ("실패한 백업 상세" → "실패 백업 목록")
+- 실패 백업 목록에서 클라이언트, 에러 개수, 에러 로그 컬럼 제거
+- 실패 백업 목록에 상세보기 링크 추가
+- 백업 현황 요약은 모든 레벨(Full, Incremental, Differential) 통계 유지
+
+### 완료 항목
+- [x] ReportGenerator에서 success_jobs를 Full 백업만 필터링 (job.level == 'F')
+- [x] 성공한 백업 목록 제목 변경 ("✅ Full 백업 성공 목록")
+- [x] 성공한 백업 목록 테이블에서 레벨 컬럼 제거 (7개 컬럼)
+- [x] 실패 백업 목록 제목 변경 ("⚠️ 실패 백업 목록")
+- [x] 실패 백업 목록에서 클라이언트, 에러 개수, 에러 로그 컬럼 제거 (6개 컬럼)
+- [x] 실패 백업 목록에 상세보기 링크 추가
+- [x] .env 파일에 실제 Baculum 웹 IP 설정 (172.16.1.0:9095)
+- [x] 통합 테스트 및 이메일 발송 테스트 완료
+
+### 주요 파일
+- `src/report/report_generator.py`: Full 백업 필터링 로직 추가
+- `templates/report_template.html`: 테이블 구조 최적화
+- `.env`: Baculum 웹 설정 추가 (172.16.1.0:9095)
+
+### Git 커밋
+- da4672c: Phase 10: HTML 리포트 템플릿 수정 및 상세보기 기능 추가
+- 6336ca8: docs: Phase 10 작업 완료 및 아카이브
+
+### 문서
+- [상세 내역](./tasks/task-010-report-filtering-optimization.md)
+
+---
+
 ## 🔄 현재 작업
 
 현재 활성화된 작업은 [task-active.md](./task-active.md)를 참조하세요.
@@ -157,4 +233,4 @@
 
 ---
 
-**마지막 업데이트**: 2025-10-13
+**마지막 업데이트**: 2025-10-17
