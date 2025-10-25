@@ -69,64 +69,102 @@ MAIL_TO=recipient@example.com
 
 ## 🚀 사용 방법
 
-### 기본 실행
+### 기본 실행 (새로운 CLI)
 
 ```bash
+# 도움말 보기
+python -m src --help
+python -m src report --help
+
 # 테스트 모드 (최근 1주일 데이터)
-python -m src.main --mode test
+python -m src report --mode test
 
 # 프로덕션 모드 (전일 22시 ~ 현재)
-python -m src.main --mode production
+python -m src report --mode production
 
 # 메일 발송 포함
-python -m src.main --mode production --send-mail
+python -m src report --mode production --send-mail
 ```
 
 ### 상세 로그 출력
 
 ```bash
-python -m src.main --mode test --verbose
+python -m src report --mode test --verbose
 
 # 메일 발송 포함 + 상세 로그
-python -m src.main --mode test --send-mail --verbose
+python -m src report --mode test --send-mail --verbose
 ```
 
 ### 출력 파일명 지정
 
 ```bash
-python -m src.main --mode test --output custom_report.html
+python -m src report --mode test --output custom_report.html
 ```
 
-## 📂 프로젝트 구조
+### 기존 사용법 (Deprecated)
+
+⚠️ **주의**: 아래 명령어는 곧 제거될 예정입니다. 위의 새로운 CLI를 사용하세요.
+
+```bash
+# 이전 방식 (deprecation 경고 출력됨)
+python -m src.main --mode test
+```
+
+## 📂 프로젝트 구조 (리팩터링 완료)
 
 ```
 baculum/
 ├── src/
-│   ├── api/                 # API 클라이언트
-│   │   └── bacula_client.py
-│   ├── mail/                # 메일 발송 모듈
+│   ├── api/                    # [공통] API 클라이언트
 │   │   ├── __init__.py
-│   │   └── email_sender.py
-│   ├── models/              # 데이터 모델
+│   │   └── client.py           # Bacula API 클라이언트
+│   ├── models/                 # [공통] 데이터 모델
+│   │   ├── __init__.py
 │   │   ├── backup_job.py
 │   │   └── report_stats.py
-│   ├── report/              # 리포트 생성
-│   │   └── report_generator.py
-│   ├── utils/               # 유틸리티
+│   ├── services/               # [공통] 비즈니스 로직 서비스 레이어
+│   │   ├── __init__.py
+│   │   └── backup.py           # 백업 서비스
+│   ├── commands/               # [확장] 기능별 커맨드
+│   │   ├── __init__.py
+│   │   ├── base.py             # 커맨드 베이스 클래스
+│   │   └── report.py           # 리포트 생성 커맨드
+│   ├── report/                 # [기능] 리포트 생성 전용
+│   │   ├── __init__.py
+│   │   └── generator.py        # HTML 리포트 생성기
+│   ├── mail/                   # [기능] 메일 발송
+│   │   ├── __init__.py
+│   │   └── sender.py           # 이메일 발송기
+│   ├── utils/                  # [공통] 유틸리티
+│   │   ├── __init__.py
 │   │   ├── config.py
 │   │   ├── logger.py
-│   │   └── datetime_helper.py
-│   └── main.py              # 메인 프로그램
-├── templates/               # HTML 템플릿
+│   │   └── datetime.py
+│   ├── __main__.py             # 모듈 실행 진입점
+│   ├── cli.py                  # CLI 라우터
+│   └── main.py                 # (Deprecated) 기존 진입점
+├── templates/                  # HTML 템플릿
 │   └── report_template.html
-├── reports/                 # 생성된 리포트
-├── logs/                    # 로그 파일
-├── tests/                   # 테스트 코드
-├── .env                     # 환경 변수 (git 제외)
-├── .env.example             # 환경 변수 예시
-├── requirements.txt         # 의존성 패키지
+├── reports/                    # 생성된 리포트
+├── logs/                       # 로그 파일
+├── tests/                      # 테스트 코드
+├── docs/                       # 문서
+│   ├── project.md
+│   └── task-active.md
+├── .env                        # 환경 변수 (git 제외)
+├── .env.example                # 환경 변수 예시
+├── requirements.txt            # 의존성 패키지
 └── README.md
 ```
+
+### 아키텍처 개요
+
+- **commands/**: 각 기능을 독립적인 커맨드로 구현 (확장 가능)
+- **services/**: 비즈니스 로직을 재사용 가능한 서비스로 제공
+- **api/, models/, utils/**: 공통 모듈 (여러 커맨드에서 재사용)
+- **report/, mail/**: 특정 기능 전용 모듈
+
+새로운 기능 추가 시 `commands/`에 새 커맨드 클래스를 추가하면 됩니다.
 
 ## 🧪 테스트
 
